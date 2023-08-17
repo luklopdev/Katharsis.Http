@@ -361,3 +361,5 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/Katharsis.Console/appsettings.json
+/Katharsis.Console/appsettings.txt
