@@ -19,11 +19,13 @@ namespace Katharsis.Http
     {
         public ISerializer Serializer { get; set; }
         public string URL { get; set; }
+        public Dictionary<string, string> Headers { get; set; }
 
         public KatharsisClient()
         {
             URL = string.Empty;
             Serializer = new JsonSerializer();
+            Headers = new Dictionary<string, string>();
         }
 
         public KatharsisClient(string url) : this()
@@ -36,9 +38,37 @@ namespace Katharsis.Http
             Serializer = serializer;
         }
 
+        public KatharsisClient(string url, Dictionary<string, string> headers) : this(url)
+        {
+            Headers = headers;
+        }
+
+        public KatharsisResponse Request(string resource)
+            => RequestAsync(resource).Result;
+
+        public KatharsisResponse Request(string resource, Dictionary<string, string> headers = null)
+            => RequestAsync(resource, headers).Result;
+
+        public KatharsisResponse Request(string resource, Method method)
+            => RequestAsync(resource, method).Result;
+
+        public KatharsisResponse Request(string resource, Method method, Dictionary<string, string> headers = null)
+            => RequestAsync(resource, method, headers).Result;
+
+        public KatharsisResponse Request(string resource, Method method, object body)
+            => RequestAsync(resource, method, body).Result;
+
+        public KatharsisResponse Request(string resource, Method method, object body, Dictionary<string, string> headers = null)
+            => RequestAsync(resource, method, body, headers).Result;
+
         public async Task<KatharsisResponse> RequestAsync(string resource)
         {
             return await RequestAsync(resource, Method.Get);
+        }
+
+        public async Task<KatharsisResponse> RequestAsync(string resource, Dictionary<string, string> headers = null)
+        {
+            return await RequestAsync(resource, Method.Get, headers);
         }
 
         public async Task<KatharsisResponse> RequestAsync(string resource, Method method)
@@ -46,7 +76,12 @@ namespace Katharsis.Http
             return await RequestAsync(resource, method, null);
         }
 
-        public async Task<KatharsisResponse> RequestAsync(string resource, Method method, object body)
+        public async Task<KatharsisResponse> RequestAsync(string resource, Method method, Dictionary<string, string> headers = null)
+        {
+            return await RequestAsync(resource, method, null, headers);
+        }
+
+        public async Task<KatharsisResponse> RequestAsync(string resource, Method method, object body, Dictionary<string, string> headers = null)
         {
             KatharsisResponse katharsisResponse = new KatharsisResponse();
             HttpRequestMessage httpRequestMessage = new HttpRequestMessage();
@@ -58,19 +93,24 @@ namespace Katharsis.Http
                 httpRequestMessage.Content = GetContent(body);
             }
 
-            try
+            if (headers != null)
             {
-                using (HttpClient client = new HttpClient())
+                foreach (var header in headers)
                 {
-                    HttpResponseMessage response = await client.SendAsync(httpRequestMessage);
-                    response.EnsureSuccessStatusCode();
-                    katharsisResponse.Content = await response.Content.ReadAsStringAsync();
-
+                    httpRequestMessage.Headers.Add(header.Key, header.Value);
                 }
             }
-            catch (HttpRequestException ex)
+
+            using (HttpClient client = new HttpClient())
             {
-                throw ex;
+                client.BaseAddress = new Uri(URL);
+                foreach (var header in Headers)
+                {
+                    client.DefaultRequestHeaders.Add(header.Key, header.Value);
+                }
+
+                HttpResponseMessage response = await client.SendAsync(httpRequestMessage);
+                katharsisResponse.Content = await response.Content.ReadAsStringAsync();
             }
 
             return katharsisResponse;

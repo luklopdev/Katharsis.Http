@@ -11,4 +11,10 @@
     <ProjectReference Include="..\Katharsis.Http\Katharsis.Http.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="appsettings.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
