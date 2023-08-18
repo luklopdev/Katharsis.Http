@@ -21,6 +21,9 @@ namespace Katharsis.Http
         public string URL { get; set; }
         public Dictionary<string, string> Headers { get; set; }
 
+        /// <summary>
+        /// A class that handles HTTP requests.
+        /// </summary>
         public KatharsisClient()
         {
             URL = string.Empty;
@@ -28,37 +31,58 @@ namespace Katharsis.Http
             Headers = new Dictionary<string, string>();
         }
 
+        /// <summary>
+        /// A class that handles HTTP requests
+        /// </summary>
+        /// <param name="url">Base URL Address.</param>
         public KatharsisClient(string url) : this()
         {
             URL = url;
         }
 
+        /// <summary>
+        /// A class that handles HTTP requests.
+        /// </summary>
+        /// <param name="url">Base URL Address.</param>
+        /// <param name="serializer">An object that implements ISerializer interface, which handles body's object
+        /// serialization.
+        /// </param>
         public KatharsisClient(string url, ISerializer serializer) : this(url)
         {
             Serializer = serializer;
         }
 
+        /// <summary>
+        /// A class that handles HTTP requests.
+        /// </summary>
+        /// <param name="url">Base URL Address.</param>
+        /// <param name="headers">Default headers that will be attached to every request made by this object.</param>
         public KatharsisClient(string url, Dictionary<string, string> headers) : this(url)
         {
             Headers = headers;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="resource"></param>
+        /// <returns></returns>
         public KatharsisResponse Request(string resource)
             => RequestAsync(resource).Result;
 
-        public KatharsisResponse Request(string resource, Dictionary<string, string> headers = null)
+        public KatharsisResponse Request(string resource, Dictionary<string, string> headers)
             => RequestAsync(resource, headers).Result;
 
         public KatharsisResponse Request(string resource, Method method)
             => RequestAsync(resource, method).Result;
 
-        public KatharsisResponse Request(string resource, Method method, Dictionary<string, string> headers = null)
+        public KatharsisResponse Request(string resource, Method method, Dictionary<string, string> headers)
             => RequestAsync(resource, method, headers).Result;
 
         public KatharsisResponse Request(string resource, Method method, object body)
             => RequestAsync(resource, method, body).Result;
 
-        public KatharsisResponse Request(string resource, Method method, object body, Dictionary<string, string> headers = null)
+        public KatharsisResponse Request(string resource, Method method, object body, Dictionary<string, string> headers)
             => RequestAsync(resource, method, body, headers).Result;
 
         public async Task<KatharsisResponse> RequestAsync(string resource)
@@ -66,7 +90,7 @@ namespace Katharsis.Http
             return await RequestAsync(resource, Method.Get);
         }
 
-        public async Task<KatharsisResponse> RequestAsync(string resource, Dictionary<string, string> headers = null)
+        public async Task<KatharsisResponse> RequestAsync(string resource, Dictionary<string, string> headers)
         {
             return await RequestAsync(resource, Method.Get, headers);
         }
@@ -76,50 +100,129 @@ namespace Katharsis.Http
             return await RequestAsync(resource, method, null);
         }
 
-        public async Task<KatharsisResponse> RequestAsync(string resource, Method method, Dictionary<string, string> headers = null)
+        public async Task<KatharsisResponse> RequestAsync(string resource, Method method, object body)
+        {
+            return await RequestAsync(resource, method, body, null);
+        }
+
+        public async Task<KatharsisResponse> RequestAsync(string resource, Method method, Dictionary<string, string> headers)
         {
             return await RequestAsync(resource, method, null, headers);
         }
 
-        public async Task<KatharsisResponse> RequestAsync(string resource, Method method, object body, Dictionary<string, string> headers = null)
+        public async Task<KatharsisResponse> RequestAsync(string resource, Method method, object body, Dictionary<string, string> headers)
         {
             KatharsisResponse katharsisResponse = new KatharsisResponse();
-            HttpRequestMessage httpRequestMessage = new HttpRequestMessage();
-            httpRequestMessage.Method = GetMethod(method);
-            httpRequestMessage.RequestUri = new Uri(Path.Combine(URL, resource));
-
-            if (body != null)
+            try
             {
-                httpRequestMessage.Content = GetContent(body);
-            }
+                HttpRequestMessage httpRequestMessage = new HttpRequestMessage();
+                httpRequestMessage.Method = GetMethod(method);
+                httpRequestMessage.RequestUri = new Uri(Path.Combine(URL, resource));
 
-            if (headers != null)
-            {
-                foreach (var header in headers)
+                if (body != null)
                 {
-                    httpRequestMessage.Headers.Add(header.Key, header.Value);
-                }
-            }
-
-            using (HttpClient client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(URL);
-                foreach (var header in Headers)
-                {
-                    client.DefaultRequestHeaders.Add(header.Key, header.Value);
+                    httpRequestMessage.Content = GetContent(body);
                 }
 
-                HttpResponseMessage response = await client.SendAsync(httpRequestMessage);
-                katharsisResponse.Content = await response.Content.ReadAsStringAsync();
+                if (headers != null)
+                {
+                    foreach (var header in headers)
+                    {
+                        httpRequestMessage.Headers.Add(header.Key, header.Value);
+                    }
+                }
+
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(URL);
+                    foreach (var header in Headers)
+                    {
+                        client.DefaultRequestHeaders.Add(header.Key, header.Value);
+                    }
+
+                    HttpResponseMessage response = await client.SendAsync(httpRequestMessage);
+                    katharsisResponse.Content = await response.Content.ReadAsStringAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                katharsisResponse.Exception = ex;
             }
 
             return katharsisResponse;
         }
 
-        public KatharsisResponse Get(string resource)
-        {
-            return RequestAsync(resource).Result;
-        }
+        public KatharsisResponse Get(string resource) 
+            => RequestAsync(resource, Method.Get).Result;
+
+        public KatharsisResponse Get(string resource, Dictionary<string, string> headers) 
+            => RequestAsync(resource, Method.Get, headers).Result;
+
+        public KatharsisResponse Get(string resource, object body)
+            => RequestAsync(resource, Method.Get, body).Result;
+
+        public KatharsisResponse Get(string resource, object body, Dictionary<string, string> headers)
+            => RequestAsync(resource, Method.Get, body, headers).Result;
+
+        public async Task<KatharsisResponse> GetAsync(string resource)
+            => await RequestAsync(resource, Method.Get);
+
+        public async Task<KatharsisResponse> GetAsync(string resource, Dictionary<string, string> headers)
+            => await RequestAsync(resource, Method.Get, headers);
+
+        public async Task<KatharsisResponse> GetAsync(string resource, object body)
+            => await RequestAsync(resource, Method.Get, body);
+
+        public async Task<KatharsisResponse> GetAsync(string resource, object body, Dictionary<string, string> headers)
+            => await RequestAsync(resource, Method.Get, body, headers);
+
+        public KatharsisResponse Post(string resource) 
+            => RequestAsync(resource, Method.Post).Result;
+
+        public KatharsisResponse Post(string resource, Dictionary<string, string> headers)
+            => RequestAsync(resource, Method.Post, headers).Result;
+
+        public KatharsisResponse Post(string resource, object body)
+            => RequestAsync(resource, Method.Post, body).Result;
+
+        public KatharsisResponse Post(string resource, object body, Dictionary<string, string> headers)
+            => RequestAsync(resource, Method.Post, body, headers).Result;
+
+        public async Task<KatharsisResponse> PostAsync(string resource)
+            => await RequestAsync(resource, Method.Post);
+
+        public async Task<KatharsisResponse> PostAsync(string resource, Dictionary<string, string> headers)
+            => await RequestAsync(resource, Method.Post, headers);
+
+        public async Task<KatharsisResponse> PostAsync(string resource, object body)
+            => await RequestAsync(resource, Method.Post, body);
+
+        public async Task<KatharsisResponse> PostAsync(string resource, object body, Dictionary<string, string> headers)
+            => await RequestAsync(resource, Method.Post, body, headers);
+
+        public KatharsisResponse Put(string resource)
+            => RequestAsync(resource, Method.Put).Result;
+
+        public KatharsisResponse Put(string resource, Dictionary<string, string> headers)
+            => RequestAsync(resource, Method.Put, headers).Result;
+
+        public KatharsisResponse Put(string resource, object body)
+            => RequestAsync(resource, Method.Put, body).Result;
+
+        public KatharsisResponse Put(string resource, object body, Dictionary<string, string> headers)
+            => RequestAsync(resource, Method.Put, body, headers).Result;
+
+        public async Task<KatharsisResponse> PutAsync(string resource)
+            => await RequestAsync(resource, Method.Put);
+
+        public async Task<KatharsisResponse> PutAsync(string resource, Dictionary<string, string> headers)
+            => await RequestAsync(resource, Method.Put, headers);
+
+        public async Task<KatharsisResponse> PutAsync(string resource, object body)
+            => await RequestAsync(resource, Method.Put, body);
+
+        public async Task<KatharsisResponse> PutAsync(string resource, object body, Dictionary<string, string> headers)
+            => await RequestAsync(resource, Method.Put, body, headers);
 
         private HttpMethod GetMethod(Method method) => method switch
         {
