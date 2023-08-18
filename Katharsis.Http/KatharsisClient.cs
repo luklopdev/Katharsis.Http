@@ -15,6 +15,9 @@ namespace Katharsis.Http
         Trace
     }
 
+    /// <summary>
+    /// Class that handles HTTP Requests
+    /// </summary>
     public class KatharsisClient
     {
         public ISerializer Serializer { get; set; }
@@ -22,8 +25,14 @@ namespace Katharsis.Http
         public Dictionary<string, string> Headers { get; set; }
 
         /// <summary>
-        /// A class that handles HTTP requests.
+        /// Initializes a new instance of <see cref="KatharsisClient"/> class that handles HTTP requests.
         /// </summary>
+        /// <remarks>
+        /// New instance is being created with empty 
+        /// <see cref="URL">Web API's Base URL</see>,
+        /// default JSON <see cref="Serializer">Serializer</see> that implements <see cref="ISerializer"/> interface,
+        /// and empty <see cref="Headers">Headers</see> instance of <see cref="Dictionary{TKey, TValue}"/> class.
+        /// </remarks>
         public KatharsisClient()
         {
             URL = string.Empty;
@@ -31,22 +40,42 @@ namespace Katharsis.Http
             Headers = new Dictionary<string, string>();
         }
 
-        /// <summary>
-        /// A class that handles HTTP requests
-        /// </summary>
-        /// <param name="url">Base URL Address.</param>
+
+        /// <inheritdoc cref="KatharsisClient()" path="/summary"/>
+        /// <param name="url"><see cref="URL">Web API's Base URL</see></param>
+        /// <remarks>
+        /// New instance is being created with provided <paramref name="url"/> for 
+        /// <see cref="URL">Web API's Base URL</see>,
+        /// default JSON <see cref="Serializer">Serializer</see> that implements <see cref="ISerializer"/> interface,
+        /// and empty <see cref="Headers">Headers</see> instance of <see cref="Dictionary{TKey, TValue}"/> class.
+        /// </remarks>
         public KatharsisClient(string url) : this()
         {
             URL = url;
         }
 
-        /// <summary>
-        /// A class that handles HTTP requests.
-        /// </summary>
-        /// <param name="url">Base URL Address.</param>
-        /// <param name="serializer">An object that implements ISerializer interface, which handles body's object
-        /// serialization.
-        /// </param>
+        /// <inheritdoc cref="KatharsisClient()" path="/summary"/>
+        /// <param name="url"><see cref="URL">Web API's Base URL</see></param>
+        /// <remarks>
+        /// New instance is being created with provided <paramref name="url"/> for 
+        /// <see cref="URL">Web API's Base URL</see>,
+        /// provided <paramref name="serializer"/> for <see cref="Serializer">Serializer</see> 
+        /// that implements <see cref="ISerializer"/> interface,
+        /// and empty <see cref="Headers">Headers</see> instance of <see cref="Dictionary{TKey, TValue}"/> class.
+        /// <example>
+        /// <para>This shows how to implement Serializer class for serializing body content for HTTP request:</para>
+        /// <code>
+        /// var serializer = new JsonSerializer();
+        /// var client = new KatharsisClient(BASE_URL, serializer);
+        ///
+        /// internal class JsonSerializer : ISerializer
+        /// {
+        ///     public string Serialize(object body) => JsonConvert.SerializeObject(body);
+        /// }
+        /// </code>
+        /// </example>
+        /// </remarks>
+
         public KatharsisClient(string url, ISerializer serializer) : this(url)
         {
             Serializer = serializer;
@@ -63,16 +92,28 @@ namespace Katharsis.Http
         }
 
         /// <summary>
-        /// 
+        /// Sends HTTP request for provided resource.
         /// </summary>
-        /// <param name="resource"></param>
-        /// <returns></returns>
+        /// <param name="resource">Web API resource.</param>
+        /// <returns>HTTP response object.</returns>
         public KatharsisResponse Request(string resource)
             => RequestAsync(resource).Result;
 
+        /// <summary>
+        /// Sends HTTP request for provided resource.
+        /// </summary>
+        /// <param name="resource">Web API resource.</param>
+        /// <param name="headers">Additional headers for this HTTP request.</param>
+        /// <returns>HTTP response object.</returns>
         public KatharsisResponse Request(string resource, Dictionary<string, string> headers)
             => RequestAsync(resource, headers).Result;
 
+        /// <summary>
+        /// Sends HTTP request for provided resource.
+        /// </summary>
+        /// <param name="resource">Web API resource.</param>
+        /// <param name="method">Additional headers for this HTTP request.</param>
+        /// <returns>HTTP response object.</returns>
         public KatharsisResponse Request(string resource, Method method)
             => RequestAsync(resource, method).Result;
 

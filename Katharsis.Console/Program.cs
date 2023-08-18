@@ -8,8 +8,8 @@ var defaultHeaders = new Dictionary<string, string>()
     ["key"] = token
 };
 
-
-var client = new KatharsisClient(BASE_URL, defaultHeaders);
+var client1 = new KatharsisClient();
+var client = new KatharsisClient(BASE_URL);
 
 var locations = new
 {
