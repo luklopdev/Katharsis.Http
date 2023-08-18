@@ -20,8 +20,32 @@ namespace Katharsis.Http
     /// </summary>
     public class KatharsisClient
     {
-        public ISerializer Serializer { get; set; }
+        ///<remarks>
+        /// <example>
+        /// <para>This shows how to implement Serializer class for serializing body content for HTTP request:</para>
+        /// <code>
+        /// var serializer = new JsonSerializer();
+        /// var client = new KatharsisClient(BASE_URL);
+        /// client.Serializer = serializer
+        ///
+        /// internal class JsonSerializer : ISerializer
+        /// {
+        ///     public string Serialize(object body) => JsonConvert.SerializeObject(body);
+        /// }
+        /// </code>
+        /// </example>
+        /// </remarks>
+        /// <value>Instance of object that serializes body object to HTTP Content request.</value>
+        public ISerializer Serializer { private get; set; }
+
+        /// <summary>
+        /// Web API's base address.
+        /// </summary>
         public string URL { get; set; }
+
+        /// <summary>
+        /// Client's default headers for HTTP requests.
+        /// </summary>
         public Dictionary<string, string> Headers { get; set; }
 
         /// <summary>
@@ -75,17 +99,36 @@ namespace Katharsis.Http
         /// </code>
         /// </example>
         /// </remarks>
-
         public KatharsisClient(string url, ISerializer serializer) : this(url)
         {
             Serializer = serializer;
         }
 
-        /// <summary>
-        /// A class that handles HTTP requests.
-        /// </summary>
-        /// <param name="url">Base URL Address.</param>
-        /// <param name="headers">Default headers that will be attached to every request made by this object.</param>
+        /// <inheritdoc cref="KatharsisClient()" path="/summary"/>
+        /// <param name="url"><see cref="URL">Web API's Base URL</see></param>
+        /// <remarks>
+        /// New instance is being created with provided <paramref name="url"/> for 
+        /// <see cref="URL">Web API's Base URL</see>,
+        /// default JSON <see cref="Serializer">Serializer</see> that implements <see cref="ISerializer"/> interface,
+        /// and provided <paramref name="headers"/> for <see cref="Headers">Headers</see> instance of <see cref="Dictionary{TKey, TValue}"/> class.
+        /// <example>
+        /// <para>This shows how to implement Serializer class for serializing body content for HTTP request:</para>
+        /// <code>
+        /// var defaultHeaders = new Dictionary&lt;string, string&gt;()
+        /// {
+        ///     ["Key"] = "PR!V$T3K3Y",
+        ///     ["content-type"] = "application/json"
+        /// };
+        /// 
+        /// var client = new KatharsisClient(BASE_URL, serializer);
+        ///
+        /// internal class JsonSerializer : ISerializer
+        /// {
+        ///     public string Serialize(object body) => JsonConvert.SerializeObject(body);
+        /// }
+        /// </code>
+        /// </example>
+        /// </remarks>
         public KatharsisClient(string url, Dictionary<string, string> headers) : this(url)
         {
             Headers = headers;
@@ -99,19 +142,15 @@ namespace Katharsis.Http
         public KatharsisResponse Request(string resource)
             => RequestAsync(resource).Result;
 
-        /// <summary>
-        /// Sends HTTP request for provided resource.
-        /// </summary>
-        /// <param name="resource">Web API resource.</param>
+        /// <inheritdoc cref="Request(string)"/>
+        /// <param name="resource">Web API resource</param>
         /// <param name="headers">Additional headers for this HTTP request.</param>
         /// <returns>HTTP response object.</returns>
         public KatharsisResponse Request(string resource, Dictionary<string, string> headers)
             => RequestAsync(resource, headers).Result;
 
-        /// <summary>
-        /// Sends HTTP request for provided resource.
-        /// </summary>
-        /// <param name="resource">Web API resource.</param>
+        /// <inheritdoc cref="Request(string)"/>
+        /// <inheritdoc cref="Request(string)" path="param[@name='resource']"/>
         /// <param name="method">Additional headers for this HTTP request.</param>
         /// <returns>HTTP response object.</returns>
         public KatharsisResponse Request(string resource, Method method)

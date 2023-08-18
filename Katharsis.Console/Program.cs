@@ -26,6 +26,6 @@ var locations = new
     }
 };
 
-var result = client.Request("current.json?q=Bulk", Method.Get);
+var result = client.Request(BASE_URL);
 
 Console.ReadKey();
