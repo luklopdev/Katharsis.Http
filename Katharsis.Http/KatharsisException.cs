@@ -6,9 +6,24 @@ using System.Threading.Tasks;
 
 namespace Katharsis.Http
 {
-    public class KatharsisException : Exception
+    /// <summary>
+    /// Exception handler for Katharsis HTTP errors. 
+    /// </summary>
+    public class KatharsisHttpException : Exception
     {
-        public KatharsisException(string message) : base(message)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="KatharsisHttpException"/> class.
+        /// </summary>
+        /// <param name="message"><inheritdoc cref="Exception(string)"/></param>
+        public KatharsisHttpException(string message) : base(message)
+        {
+            
+        }
+
+        /// <inheritdoc cref="KatharsisHttpException(string)"/>
+        /// <param name="message"><inheritdoc cref="Exception(string)"/></param>
+        /// <param name="innerException"><inheritdoc cref="Exception(string, Exception)"/></param>
+        public KatharsisHttpException(string message, Exception innerException) : base(message, innerException)
         {
             
         }

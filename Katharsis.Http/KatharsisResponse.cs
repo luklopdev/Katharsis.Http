@@ -9,7 +9,7 @@ namespace Katharsis.Http
     public class KatharsisResponse
     {
         public string Content { get; set; }
-        public Exception Exception { get; internal set; }
+        public KatharsisHttpException Exception { get; internal set; }
     }
 
     public class KatharsisResponse<T> : KatharsisResponse

@@ -112,7 +112,7 @@ namespace Katharsis.Http
         /// default JSON <see cref="Serializer">Serializer</see> that implements <see cref="ISerializer"/> interface,
         /// and provided <paramref name="headers"/> for <see cref="Headers">Headers</see> instance of <see cref="Dictionary{TKey, TValue}"/> class.
         /// <example>
-        /// <para>This shows how to implement Serializer class for serializing body content for HTTP request:</para>
+        /// <para>This shows how to add default headers that will be attached to every HTTP request when using the client:</para>
         /// <code>
         /// var defaultHeaders = new Dictionary&lt;string, string&gt;()
         /// {
@@ -120,12 +120,8 @@ namespace Katharsis.Http
         ///     ["content-type"] = "application/json"
         /// };
         /// 
-        /// var client = new KatharsisClient(BASE_URL, serializer);
+        /// var client = new KatharsisClient(BASE_URL, defaultHeaders);
         ///
-        /// internal class JsonSerializer : ISerializer
-        /// {
-        ///     public string Serialize(object body) => JsonConvert.SerializeObject(body);
-        /// }
         /// </code>
         /// </example>
         /// </remarks>
@@ -226,7 +222,9 @@ namespace Katharsis.Http
             }
             catch (Exception ex)
             {
-                katharsisResponse.Exception = ex;
+                katharsisResponse.Exception = new KatharsisHttpException(@"
+Exception has occured in RequestAsync method. Please contact the author of Katharsis.Http library", 
+ex);
             }
 
             return katharsisResponse;
