@@ -229,6 +229,7 @@ namespace Katharsis.Http
         public async Task<KatharsisResponse> RequestAsync(string resource, Method method, object body, Dictionary<string, string> headers)
         {
             KatharsisResponse katharsisResponse = new KatharsisResponse();
+
             try
             {
                 HttpRequestMessage httpRequestMessage = new HttpRequestMessage();
@@ -270,75 +271,135 @@ ex);
             return katharsisResponse;
         }
 
+        /// <inheritdoc cref="Get(string, object, Dictionary{string, string})"/>
         public KatharsisResponse Get(string resource) 
             => RequestAsync(resource, Method.Get).Result;
 
+        /// <inheritdoc cref="Get(string, object, Dictionary{string, string})"/>
         public KatharsisResponse Get(string resource, Dictionary<string, string> headers) 
             => RequestAsync(resource, Method.Get, headers).Result;
 
+        /// <inheritdoc cref="Get(string, object, Dictionary{string, string})"/>
         public KatharsisResponse Get(string resource, object body)
             => RequestAsync(resource, Method.Get, body).Result;
 
+        /// <summary>
+        /// Sends a GET HTTP request to specified client base's URL and resource.
+        /// </summary>
+        /// <param name="resource">Web API's resource.</param>
+        /// <param name="body">Body object that will be serialized by <see cref="Serializer"/> object and attached to HTTP's request content.</param>
+        /// <param name="headers">Additional headers for this HTTP request.</param>
+        /// <returns>An HTTP response object.</returns>
         public KatharsisResponse Get(string resource, object body, Dictionary<string, string> headers)
             => RequestAsync(resource, Method.Get, body, headers).Result;
 
+        /// <inheritdoc cref="GetAsync(string, object, Dictionary{string, string})"/>
         public async Task<KatharsisResponse> GetAsync(string resource)
             => await RequestAsync(resource, Method.Get);
 
+        /// <inheritdoc cref="GetAsync(string, object, Dictionary{string, string})"/>
         public async Task<KatharsisResponse> GetAsync(string resource, Dictionary<string, string> headers)
             => await RequestAsync(resource, Method.Get, headers);
 
+        /// <inheritdoc cref="GetAsync(string, object, Dictionary{string, string})"/>
         public async Task<KatharsisResponse> GetAsync(string resource, object body)
             => await RequestAsync(resource, Method.Get, body);
 
+        /// <summary>
+        /// Sends a GET HTTP request to specified client base's URL and resource as asynchronous operation.
+        /// </summary>
+        /// <param name="resource">Web API's resource.</param>
+        /// <param name="body">Body object that will be serialized by <see cref="Serializer"/> object and attached to HTTP's request content.</param>
+        /// <param name="headers">Additional headers for this HTTP request.</param>
+        /// <returns>The task object representing asynchronous operation.</returns>
         public async Task<KatharsisResponse> GetAsync(string resource, object body, Dictionary<string, string> headers)
             => await RequestAsync(resource, Method.Get, body, headers);
 
+        /// <inheritdoc cref="Post(string, object, Dictionary{string, string})"/>
         public KatharsisResponse Post(string resource) 
             => RequestAsync(resource, Method.Post).Result;
 
+        /// <inheritdoc cref="Post(string, object, Dictionary{string, string})"/>
         public KatharsisResponse Post(string resource, Dictionary<string, string> headers)
             => RequestAsync(resource, Method.Post, headers).Result;
 
+        /// <inheritdoc cref="Post(string, object, Dictionary{string, string})"/>
         public KatharsisResponse Post(string resource, object body)
             => RequestAsync(resource, Method.Post, body).Result;
 
+        /// <summary>
+        /// Sends a POST HTTP request to specified client base's URL and resource.
+        /// </summary>
+        /// <param name="resource">Web API's resource.</param>
+        /// <param name="body">Body object that will be serialized by <see cref="Serializer"/> object and attached to HTTP's request content.</param>
+        /// <param name="headers">Additional headers for this HTTP request.</param>
+        /// <returns>An HTTP response object.</returns>
         public KatharsisResponse Post(string resource, object body, Dictionary<string, string> headers)
             => RequestAsync(resource, Method.Post, body, headers).Result;
 
+        /// <inheritdoc cref="PostAsync(string, object, Dictionary{string, string})"/>
         public async Task<KatharsisResponse> PostAsync(string resource)
             => await RequestAsync(resource, Method.Post);
 
+        /// <inheritdoc cref="PostAsync(string, object, Dictionary{string, string})"/>
         public async Task<KatharsisResponse> PostAsync(string resource, Dictionary<string, string> headers)
             => await RequestAsync(resource, Method.Post, headers);
 
+        /// <inheritdoc cref="PostAsync(string, object, Dictionary{string, string})"/>
         public async Task<KatharsisResponse> PostAsync(string resource, object body)
             => await RequestAsync(resource, Method.Post, body);
 
+        /// <summary>
+        /// Sends a POST HTTP request to specified client base's URL and resource as asynchronous operation.
+        /// </summary>
+        /// <param name="resource">Web API's resource.</param>
+        /// <param name="body">Body object that will be serialized by <see cref="Serializer"/> object and attached to HTTP's request content.</param>
+        /// <param name="headers">Additional headers for this HTTP request.</param>
+        /// <returns>The task object representing asynchronous operation.</returns>
         public async Task<KatharsisResponse> PostAsync(string resource, object body, Dictionary<string, string> headers)
             => await RequestAsync(resource, Method.Post, body, headers);
 
+        /// <inheritdoc cref="Put(string, object, Dictionary{string, string})"/>
         public KatharsisResponse Put(string resource)
             => RequestAsync(resource, Method.Put).Result;
 
+        /// <inheritdoc cref="Put(string, object, Dictionary{string, string})"/>
         public KatharsisResponse Put(string resource, Dictionary<string, string> headers)
             => RequestAsync(resource, Method.Put, headers).Result;
 
+        /// <inheritdoc cref="Put(string, object, Dictionary{string, string})"/>
         public KatharsisResponse Put(string resource, object body)
             => RequestAsync(resource, Method.Put, body).Result;
 
+        /// <summary>
+        /// Sends a PUT HTTP request to specified client base's URL and resource.
+        /// </summary>
+        /// <param name="resource">Web API's resource.</param>
+        /// <param name="body">Body object that will be serialized by <see cref="Serializer"/> object and attached to HTTP's request content.</param>
+        /// <param name="headers">Additional headers for this HTTP request.</param>
+        /// <returns>An HTTP response object.</returns>
         public KatharsisResponse Put(string resource, object body, Dictionary<string, string> headers)
             => RequestAsync(resource, Method.Put, body, headers).Result;
 
+        /// <inheritdoc cref="PutAsync(string, object, Dictionary{string, string})"/>
         public async Task<KatharsisResponse> PutAsync(string resource)
             => await RequestAsync(resource, Method.Put);
 
+        /// <inheritdoc cref="PutAsync(string, object, Dictionary{string, string})"/>
         public async Task<KatharsisResponse> PutAsync(string resource, Dictionary<string, string> headers)
             => await RequestAsync(resource, Method.Put, headers);
 
+        /// <inheritdoc cref="PutAsync(string, object, Dictionary{string, string})"/>
         public async Task<KatharsisResponse> PutAsync(string resource, object body)
             => await RequestAsync(resource, Method.Put, body);
 
+        /// <summary>
+        /// Sends a PUT HTTP request to specified client base's URL and resource as asynchronous operation.
+        /// </summary>
+        /// <param name="resource">Web API's resource.</param>
+        /// <param name="body">Body object that will be serialized by <see cref="Serializer"/> object and attached to HTTP's request content.</param>
+        /// <param name="headers">Additional headers for this HTTP request.</param>
+        /// <returns>The task object representing asynchronous operation.</returns>
         public async Task<KatharsisResponse> PutAsync(string resource, object body, Dictionary<string, string> headers)
             => await RequestAsync(resource, Method.Put, body, headers);
 
