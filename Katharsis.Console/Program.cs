@@ -1,31 +1,25 @@
 ﻿using Katharsis.Http;
-
-var token = File.ReadAllText("appsettings.txt");
-const string BASE_URL = "http://api.weatherapi.com/v1";
+using Katharsis.Http.Interfaces;
+using Newtonsoft.Json;
 
 var defaultHeaders = new Dictionary<string, string>()
 {
-    ["key"] = token
+    ["key"] = "PR1V4T3K3Y"
 };
 
-var client1 = new KatharsisClient();
-var client = new KatharsisClient(BASE_URL);
 
-var locations = new
-{
-    Locations = new List<object>
-    { 
-        new 
-        {
-            Q = "Warsaw"
-        },
-        new
-        {
-            Q = "London"
-        }
-    }
-};
+const string BASE_URL = "https://reqres.in";
+KatharsisClient client = new KatharsisClient(BASE_URL);
 
-var result = client.Get("asdasd", locations, defaultHeaders);
+var jsonSerializer = new JsonSerializer();
+client.Serializer = jsonSerializer;
+
+
+KatharsisResponse response = await client.GetAsync("api/users?page=2");
 
 Console.ReadKey();
+
+internal class JsonSerializer : ISerializer
+{
+    public string Serialize(object body) => JsonConvert.SerializeObject(body);
+}

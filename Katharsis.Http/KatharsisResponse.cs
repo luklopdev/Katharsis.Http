@@ -23,7 +23,7 @@ namespace Katharsis.Http
         /// <summary>
         /// An object containing HTTP request informations after calling it.
         /// </summary>
-        public IRequest Request { get; internal set; }
+        public KatharsisRequest Request { get; internal set; }
 
         /// <summary>
         /// HTTP response status.

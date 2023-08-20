@@ -260,6 +260,7 @@ namespace Katharsis.Http
                     katharsisResponse.Content = await response.Content.ReadAsStringAsync();
                     katharsisResponse.Status = new Status(response.StatusCode);
                     katharsisResponse.Request = request;
+                    katharsisResponse.Request?.HttpRequestMessage?.Dispose();
                 }
             }
             catch (Exception ex)
