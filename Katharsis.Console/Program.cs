@@ -7,19 +7,19 @@ var defaultHeaders = new Dictionary<string, string>()
     ["key"] = "PR1V4T3K3Y"
 };
 
-
 const string BASE_URL = "https://reqres.in";
-KatharsisClient client = new KatharsisClient(BASE_URL);
+KatharsisClient client = new KatharsisClient(BASE_URL, defaultHeaders);
 
-var jsonSerializer = new JsonSerializer();
-client.Serializer = jsonSerializer;
+var picture = new
+{
+    Base64String = "po123u9asdjd1ej12j!JSSasdjJSA0sJd=="
+};
 
+var additionalHeaders = new Dictionary<string, string>
+{
+    ["Content-Type"] = "x-www-form-urlencoded"
+};
 
-KatharsisResponse response = await client.GetAsync("api/users?page=2");
+KatharsisResponse response = client.Post("api/profile/uploadPicture?profileId=1", picture, additionalHeaders);
 
 Console.ReadKey();
-
-internal class JsonSerializer : ISerializer
-{
-    public string Serialize(object body) => JsonConvert.SerializeObject(body);
-}

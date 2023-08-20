@@ -45,6 +45,9 @@ namespace Katharsis.Http
     /// <summary>
     /// Class that handles HTTP Requests
     /// </summary>
+    /// <remarks>
+    /// <see href="https://github.com/luklopdev/Katharsis.Http/tree/master#the-client">See GitHub Documentation</see>
+    /// </remarks>
     public class KatharsisClient
     {
         ///<remarks>

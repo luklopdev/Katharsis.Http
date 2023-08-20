@@ -3,10 +3,31 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
+    <Title>Katharsis HTTP</Title>
+    <Authors>Łukasz Łopata</Authors>
+    <Description>Katharsis.Http is a library to help you write your HTTP requests code easier.</Description>
+    <Copyright>Copyright (c) 2023 Łukasz Łopata</Copyright>
+    <PackageProjectUrl>https://github.com/luklopdev/Katharsis.Http</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/luklopdev/Katharsis.Http</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>Katharsis; HTTP; Request;</PackageTags>
+    <PackageLicenseFile>license.txt</PackageLicenseFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="license.txt">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Update="README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
