@@ -259,6 +259,7 @@ namespace Katharsis.Http
 
                     HttpResponseMessage response = await client.SendAsync(httpRequestMessage);
                     katharsisResponse.Content = await response.Content.ReadAsStringAsync();
+                    katharsisResponse.Status = new Status(response.StatusCode);
                 }
             }
             catch (Exception ex)
