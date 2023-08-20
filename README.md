@@ -38,7 +38,7 @@ KatharsisClient client = new KatharsisClient(BASE_URL, defaultHeaders);
 
 #### Custom body serialization
 
-Sometimes you need to serialize your HTTP body content in a specific way. Katharsis.Http allows you to do that. `KatharsisClient` object contains property called `Serializer` that implements `ISerializer` interface. You can change implementation of that property by creating you own class that will ipmlement such interface e.g.:
+Sometimes you need to serialize your HTTP body content in a specific way. Katharsis.Http allows you to do that. `KatharsisClient` object contains property called `Serializer` that implements `ISerializer` interface. You can change implementation of that property by creating your own class that will ipmlement such interface e.g.:
 
 ```
 using Katharsis.Http.Interfaces;
