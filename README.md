@@ -20,7 +20,7 @@ KatharsisClient client = new KatharsisClient(BASE_URL);
 
 The above code will create client instance of object with base url, so every request that will be send by this client will try to request `BASE_URL` address.
 
-#### Default headers for The Client
+#### Default Headers For The Client
 
 You can also attach default headers that will be sent to every request using that specific client.
 
@@ -36,7 +36,7 @@ const string BASE_URL = "https://reqres.in";
 KatharsisClient client = new KatharsisClient(BASE_URL, defaultHeaders);
 ```
 
-#### Custom body serialization
+#### Custom Body Serialization
 
 Sometimes you need to serialize your HTTP body content in a specific way. Katharsis.Http allows you to do that. `KatharsisClient` object contains property called `Serializer` that implements `ISerializer` interface. You can change implementation of that property by creating your own class that will ipmlement such interface e.g.:
 
@@ -99,3 +99,44 @@ Katharsis.Http handles 5 basic methods for `GET`, `POST`, `PUT`, `DELETE`, `PATC
 
 For all of these methods you can pass parameters, which `resource` is required.
 
+#### Body
+
+To attach `Body Content` to the request, you can simply pass it to the method.
+E.g.:
+
+```
+var picture = new
+{
+    Base64String = "po123u9asdjd1ej12j!JSSasdjJSA0sJd=="
+};
+
+KatharsisResponse response = client.Post("api/profile/uploadPicture?profileId=1", picture);
+```
+
+#### Additional Headers
+
+Besides the fact that `The Client` has `Default Headers` you can also attach `Additional Headers` to your request. Let's sey that for example Web API requires from us `Authorization Key` - in that case we can attach it to our HTTP Client as I described in `The Client` part of documentation. But for a the specific resource which might be `/api/profile/uploadPicture` Web API requires from us to send additional header which is `Content-Type` with value of `x-www-form-urlencoded`.
+
+The code below shows you how you can handle it.
+
+```
+var defaultHeaders = new Dictionary<string, string>()
+{
+    ["key"] = "PR1V4T3K3Y"
+};
+
+const string BASE_URL = "https://reqres.in";
+KatharsisClient client = new KatharsisClient(BASE_URL, defaultHeaders);
+
+var picture = new
+{
+    Base64String = "po123u9asdjd1ej12j!JSSasdjJSA0sJd=="
+};
+
+var additionalHeaders = new Dictionary<string, string>
+{
+    ["Content-Type"] = "x-www-form-urlencoded"
+};
+
+KatharsisResponse response = client.Post("api/profile/uploadPicture?profileId=1", picture, additionalHeaders);
+```
