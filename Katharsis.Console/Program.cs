@@ -26,6 +26,6 @@ var locations = new
     }
 };
 
-var result = client.Get(BASE_URL, locations, defaultHeaders);
+var result = client.Get("asdasd", locations, defaultHeaders);
 
 Console.ReadKey();

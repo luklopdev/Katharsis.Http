@@ -232,21 +232,19 @@ namespace Katharsis.Http
 
             try
             {
-                HttpRequestMessage httpRequestMessage = new HttpRequestMessage();
-                httpRequestMessage.Method = GetMethod(method);
-                httpRequestMessage.RequestUri = new Uri(Path.Combine(URL, resource));
+                KatharsisRequest request = new KatharsisRequest(Serializer);
+
+                request.Method = method;
+                request.Uri = new Uri(new Uri(URL), resource).ToString();
 
                 if (body != null)
                 {
-                    httpRequestMessage.Content = GetContent(body);
+                    request.Content = Serializer.Serialize(body);
                 }
 
                 if (headers != null)
                 {
-                    foreach (var header in headers)
-                    {
-                        httpRequestMessage.Headers.Add(header.Key, header.Value);
-                    }
+                    request.Headers = headers;
                 }
 
                 using (HttpClient client = new HttpClient())
@@ -255,11 +253,13 @@ namespace Katharsis.Http
                     foreach (var header in Headers)
                     {
                         client.DefaultRequestHeaders.Add(header.Key, header.Value);
+                        request.Headers.Add(header.Key, header.Value);
                     }
 
-                    HttpResponseMessage response = await client.SendAsync(httpRequestMessage);
+                    HttpResponseMessage response = await client.SendAsync(request.HttpRequestMessage);
                     katharsisResponse.Content = await response.Content.ReadAsStringAsync();
                     katharsisResponse.Status = new Status(response.StatusCode);
+                    katharsisResponse.Request = request;
                 }
             }
             catch (Exception ex)
@@ -491,23 +491,5 @@ ex);
         /// <returns>The task object representing asynchronous operation.</returns>
         public async Task<KatharsisResponse> PutAsync(string resource, object body, Dictionary<string, string> headers)
             => await RequestAsync(resource, Method.Put, body, headers);
-
-        private HttpMethod GetMethod(Method method) => method switch
-        {
-            Method.Get => HttpMethod.Get,
-            Method.Post => HttpMethod.Post,
-            Method.Put => HttpMethod.Put,
-            Method.Delete => HttpMethod.Delete,
-            Method.Patch => HttpMethod.Patch,
-            Method.Head => HttpMethod.Head,
-            Method.Options => HttpMethod.Options,
-            Method.Trace => HttpMethod.Trace,
-            _ => HttpMethod.Get,
-        };
-
-        private HttpContent GetContent(object body)
-        {
-            return new StringContent(Serializer.Serialize(body));
-        }
     }
 }

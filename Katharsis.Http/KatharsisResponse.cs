@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Katharsis.Http.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -18,6 +19,11 @@ namespace Katharsis.Http
         /// An exception that occured during method execution.
         /// </summary>
         public KatharsisHttpException Exception { get; internal set; }
+
+        /// <summary>
+        /// An object containing HTTP request informations after calling it.
+        /// </summary>
+        public IRequest Request { get; internal set; }
 
         /// <summary>
         /// HTTP response status.
