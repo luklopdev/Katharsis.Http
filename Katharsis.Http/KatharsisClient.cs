@@ -271,6 +271,50 @@ ex);
             return katharsisResponse;
         }
 
+        /// <inheritdoc cref="Delete(string, object, Dictionary{string, string})"/>
+        public KatharsisResponse Delete(string resource)
+            => RequestAsync(resource, Method.Delete).Result;
+
+        /// <inheritdoc cref="Delete(string, object, Dictionary{string, string})"/>
+        public KatharsisResponse Delete(string resource, Dictionary<string, string> headers)
+            => RequestAsync(resource, Method.Delete, headers).Result;
+
+        /// <inheritdoc cref="Delete(string, object, Dictionary{string, string})"/>
+        public KatharsisResponse Delete(string resource, object body)
+            => RequestAsync(resource, Method.Delete, body).Result;
+
+        /// <summary>
+        /// Sends a DELETE HTTP request to specified client base's URL and resource.
+        /// </summary>
+        /// <param name="resource">Web API's resource.</param>
+        /// <param name="body">Body object that will be serialized by <see cref="Serializer"/> object and attached to HTTP's request content.</param>
+        /// <param name="headers">Additional headers for this HTTP request.</param>
+        /// <returns>An HTTP response object.</returns>
+        public KatharsisResponse Delete(string resource, object body, Dictionary<string, string> headers)
+            => RequestAsync(resource, Method.Delete, body, headers).Result;
+
+        /// <inheritdoc cref="DeleteAsync(string, object, Dictionary{string, string})"/>
+        public async Task<KatharsisResponse> DeleteAsync(string resource)
+            => await RequestAsync(resource, Method.Delete);
+
+        /// <inheritdoc cref="DeleteAsync(string, object, Dictionary{string, string})"/>
+        public async Task<KatharsisResponse> DeleteAsync(string resource, Dictionary<string, string> headers)
+            => await RequestAsync(resource, Method.Delete, headers);
+
+        /// <inheritdoc cref="DeleteAsync(string, object, Dictionary{string, string})"/>
+        public async Task<KatharsisResponse> DeleteAsync(string resource, object body)
+            => await RequestAsync(resource, Method.Delete, body);
+
+        /// <summary>
+        /// Sends a DELETE HTTP request to specified client base's URL and resource as asynchronous operation.
+        /// </summary>
+        /// <param name="resource">Web API's resource.</param>
+        /// <param name="body">Body object that will be serialized by <see cref="Serializer"/> object and attached to HTTP's request content.</param>
+        /// <param name="headers">Additional headers for this HTTP request.</param>
+        /// <returns>The task object representing asynchronous operation.</returns>
+        public async Task<KatharsisResponse> DeleteAsync(string resource, object body, Dictionary<string, string> headers)
+            => await RequestAsync(resource, Method.Delete, body, headers);
+
         /// <inheritdoc cref="Get(string, object, Dictionary{string, string})"/>
         public KatharsisResponse Get(string resource) 
             => RequestAsync(resource, Method.Get).Result;
@@ -314,6 +358,50 @@ ex);
         /// <returns>The task object representing asynchronous operation.</returns>
         public async Task<KatharsisResponse> GetAsync(string resource, object body, Dictionary<string, string> headers)
             => await RequestAsync(resource, Method.Get, body, headers);
+
+        /// <inheritdoc cref="Patch(string, object, Dictionary{string, string})"/>
+        public KatharsisResponse Patch(string resource)
+            => RequestAsync(resource, Method.Patch).Result;
+
+        /// <inheritdoc cref="Patch(string, object, Dictionary{string, string})"/>
+        public KatharsisResponse Patch(string resource, Dictionary<string, string> headers)
+            => RequestAsync(resource, Method.Patch, headers).Result;
+
+        /// <inheritdoc cref="Patch(string, object, Dictionary{string, string})"/>
+        public KatharsisResponse Patch(string resource, object body)
+            => RequestAsync(resource, Method.Patch, body).Result;
+
+        /// <summary>
+        /// Sends a PATCH HTTP request to specified client base's URL and resource.
+        /// </summary>
+        /// <param name="resource">Web API's resource.</param>
+        /// <param name="body">Body object that will be serialized by <see cref="Serializer"/> object and attached to HTTP's request content.</param>
+        /// <param name="headers">Additional headers for this HTTP request.</param>
+        /// <returns>An HTTP response object.</returns>
+        public KatharsisResponse Patch(string resource, object body, Dictionary<string, string> headers)
+            => RequestAsync(resource, Method.Patch, body, headers).Result;
+
+        /// <inheritdoc cref="PatchAsync(string, object, Dictionary{string, string})"/>
+        public async Task<KatharsisResponse> PatchAsync(string resource)
+            => await RequestAsync(resource, Method.Patch);
+
+        /// <inheritdoc cref="PatchAsync(string, object, Dictionary{string, string})"/>
+        public async Task<KatharsisResponse> PatchAsync(string resource, Dictionary<string, string> headers)
+            => await RequestAsync(resource, Method.Patch, headers);
+
+        /// <inheritdoc cref="PatchAsync(string, object, Dictionary{string, string})"/>
+        public async Task<KatharsisResponse> PatchAsync(string resource, object body)
+            => await RequestAsync(resource, Method.Patch, body);
+
+        /// <summary>
+        /// Sends a PATCH HTTP request to specified client base's URL and resource as asynchronous operation.
+        /// </summary>
+        /// <param name="resource">Web API's resource.</param>
+        /// <param name="body">Body object that will be serialized by <see cref="Serializer"/> object and attached to HTTP's request content.</param>
+        /// <param name="headers">Additional headers for this HTTP request.</param>
+        /// <returns>The task object representing asynchronous operation.</returns>
+        public async Task<KatharsisResponse> PatchAsync(string resource, object body, Dictionary<string, string> headers)
+            => await RequestAsync(resource, Method.Patch, body, headers);
 
         /// <inheritdoc cref="Post(string, object, Dictionary{string, string})"/>
         public KatharsisResponse Post(string resource) 

@@ -26,7 +26,7 @@ var locations = new
     }
 };
 
-var result = client.GetAsync(BASE_URL, locations, defaultHeaders);
+var result = client.Get(BASE_URL, locations, defaultHeaders);
 
 
 Console.ReadKey();
