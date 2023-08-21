@@ -66,7 +66,7 @@ namespace Katharsis.Http
         /// </example>
         /// </remarks>
         /// <value>Instance of object that serializes body object to HTTP Content request.</value>
-        public ISerializer Serializer { private get; set; }
+        public ISerializer Serializer { get; set; }
 
         /// <summary>
         /// Web API's base address.

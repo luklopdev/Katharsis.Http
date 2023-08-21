@@ -6,15 +6,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Katharsis.Http.Utilities
+namespace Katharsis.Http.UnitTests.Mocks
 {
-    internal class JsonSerializer : ISerializer
+    internal class MockSerializer : ISerializer
     {
-        public string Serialize(object body) 
+        public string Serialize(object body)
         {
-            if (body == null)
-                throw new ArgumentNullException(nameof(body));
-
             return JsonConvert.SerializeObject(body);
         }
     }
