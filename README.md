@@ -113,6 +113,8 @@ var picture = new
 KatharsisResponse response = client.Post("api/profile/uploadPicture?profileId=1", picture);
 ```
 
+Besides basic methods there is an option to send request
+
 #### Additional Headers
 
 Besides the fact that `The Client` has `Default Headers` you can also attach `Additional Headers` to your request. Let's sey that for example Web API requires from us `Authorization Key` - in that case we can attach it to our HTTP Client as I described in `The Client` part of documentation. But for a the specific resource which might be `/api/profile/uploadPicture` Web API requires from us to send additional header which is `Content-Type` with value of `x-www-form-urlencoded`.
