@@ -113,7 +113,20 @@ var picture = new
 KatharsisResponse response = client.Post("api/profile/uploadPicture?profileId=1", picture);
 ```
 
-Besides basic methods there is an option to send request
+Besides basic methods there is another method that handles http requests called `Request()` or `RequestAsync()` to send request:
+
+```
+var picture = new
+{
+    Base64String = "po123u9asdjd1ej12j!JSSasdjJSA0sJd=="
+};
+
+
+KatharsisResponse response = client.Request("api/profile/uploadPicture?profileId=1", Method.Post, picture);
+```
+
+With that method you can choose whichever  HTTP method you want.
+
 
 #### Additional Headers
 
