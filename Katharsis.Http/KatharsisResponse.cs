@@ -1,10 +1,5 @@
-﻿using Katharsis.Http.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Net;
+using System.Reflection;
 
 namespace Katharsis.Http
 {
@@ -14,6 +9,11 @@ namespace Katharsis.Http
         /// The response content.
         /// </summary>
         public string Content { get; internal set; }
+
+        /// <summary>
+        /// Bytes content.
+        /// </summary>
+        public byte[] ContentBytes { get; set; }
 
         /// <summary>
         /// An exception that occured during method execution.
@@ -34,6 +34,33 @@ namespace Katharsis.Http
     public class KatharsisResponse<T> : KatharsisResponse
     {
         public T GenericContent { get; set; }
+        public KatharsisResponse(KatharsisResponse response)
+        {
+            CopyProperties(response, this);
+        }
+
+        private void CopyProperties(object source, object destination)
+        {
+            if (source == null || destination == null)
+                return;
+
+            Type sourceType = source.GetType();
+            Type destinationType = destination.GetType();
+
+            PropertyInfo[] sourceProperties = sourceType.GetProperties();
+            foreach (var sourceProperty in sourceProperties)
+            {
+                if (sourceProperty.CanRead)
+                {
+                    PropertyInfo destinationProperty = destinationType.GetProperty(sourceProperty.Name);
+                    if (destinationProperty != null && destinationProperty.CanWrite)
+                    {
+                        object value = sourceProperty.GetValue(source);
+                        destinationProperty.SetValue(destination, value);
+                    }
+                }
+            }
+        }
     }
 
     public class Status

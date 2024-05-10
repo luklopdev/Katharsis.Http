@@ -27,11 +27,11 @@ namespace Katharsis.Http
             } 
         }
 
-        private string content;
+        private object content;
         /// <summary>
         /// The body content that request contained.
         /// </summary>
-        public string Content 
+        public object Content 
         { 
             get => content;
             internal set 
@@ -39,6 +39,13 @@ namespace Katharsis.Http
                 content = value;
                 HttpRequestMessage.Content = GetContent(value);
             } 
+        }
+
+        private string contentType;
+        internal string ContentType
+        {
+            get => contentType;
+            set => contentType = value;
         }
 
         private Dictionary<string, string> headers;
@@ -57,6 +64,12 @@ namespace Katharsis.Http
 
                 foreach (var header in value)
                 {
+                    if(header.Key == "Content-Type")
+                    {
+                        ContentType = header.Value;
+                        continue;
+                    }
+
                     HttpRequestMessage.Headers.Add(header.Key, header.Value);
                 }
             }
@@ -80,7 +93,12 @@ namespace Katharsis.Http
 
         internal readonly HttpRequestMessage HttpRequestMessage;
 
-        internal KatharsisRequest(ISerializer serializer)
+        internal KatharsisRequest()
+        {
+            Headers = new Dictionary<string, string>();
+        }
+
+        internal KatharsisRequest(ISerializer serializer) : this()
         {
             HttpRequestMessage = new HttpRequestMessage();
             Serializer = serializer;
@@ -99,9 +117,11 @@ namespace Katharsis.Http
             _ => HttpMethod.Get,
         };
 
-        private HttpContent GetContent(string content)
+        private HttpContent GetContent(object content) => ContentType switch
         {
-            return new StringContent(content);
-        }
+            Constants.ContentType.APPLICATION_X_WWW_FORM_URLENCODED => new FormUrlEncodedContent((Serializer as IDeserializer).Deserialize<Dictionary<string, string>>(Serializer.Serialize(content))),
+            Constants.ContentType.APPLICATION_JSON => new StringContent(Serializer.Serialize(content)),
+            _ => new StringContent(Serializer.Serialize(content))
+        };
     }
 }

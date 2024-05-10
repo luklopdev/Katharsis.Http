@@ -1,5 +1,6 @@
 ﻿using Katharsis.Http.Interfaces;
 using Katharsis.Http.Utilities;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Katharsis.Http
 {
@@ -66,7 +67,9 @@ namespace Katharsis.Http
         /// </example>
         /// </remarks>
         /// <value>Instance of object that serializes body object to HTTP Content request.</value>
-        public ISerializer Serializer { get; set; }
+        internal ISerializer Serializer { get; set; }
+
+        internal IDeserializer Deserializer { get; set; }
 
         /// <summary>
         /// Web API's base address.
@@ -91,6 +94,7 @@ namespace Katharsis.Http
         {
             URL = string.Empty;
             Serializer = new JsonSerializer();
+            Deserializer = (IDeserializer)Serializer;
             Headers = new Dictionary<string, string>();
         }
 
@@ -238,21 +242,23 @@ namespace Katharsis.Http
                 KatharsisRequest request = new KatharsisRequest(Serializer);
 
                 request.Method = method;
-                request.Uri = new Uri(new Uri(URL), resource).ToString();
-
-                if (body != null)
-                {
-                    request.Content = Serializer.Serialize(body);
-                }
+                request.Uri = new Uri(Path.Combine(URL, resource)).ToString();
 
                 if (headers != null)
                 {
                     request.Headers = headers;
                 }
 
+                if (body != null)
+                {
+                    request.Content = body;
+                }
+
                 using (HttpClient client = new HttpClient())
                 {
-                    client.BaseAddress = new Uri(URL);
+                    if(!string.IsNullOrWhiteSpace(URL))
+                        client.BaseAddress = new Uri(URL);
+
                     foreach (var header in Headers)
                     {
                         client.DefaultRequestHeaders.Add(header.Key, header.Value);
@@ -261,6 +267,7 @@ namespace Katharsis.Http
 
                     HttpResponseMessage response = await client.SendAsync(request.HttpRequestMessage);
                     katharsisResponse.Content = await response.Content.ReadAsStringAsync();
+                    katharsisResponse.ContentBytes = await response.Content.ReadAsByteArrayAsync();
                     katharsisResponse.Status = new Status(response.StatusCode);
                     katharsisResponse.Request = request;
                     katharsisResponse.Request?.HttpRequestMessage?.Dispose();
@@ -274,6 +281,83 @@ ex);
             }
 
             return katharsisResponse;
+        }
+
+        /// <inheritdoc cref="Request(string, Method, object, Dictionary{string, string})"/>
+        public KatharsisResponse<T> Request<T>(string resource)
+            => RequestAsync<T>(resource).Result;
+
+        /// <inheritdoc cref="Request(string, Method, object, Dictionary{string, string})"/>
+        public KatharsisResponse<T> Request<T>(string resource, Dictionary<string, string> headers)
+            => RequestAsync<T>(resource, headers).Result;
+
+        /// <inheritdoc cref="Request(string, Method, object, Dictionary{string, string})"/>
+        public KatharsisResponse<T> Request<T>(string resource, Method method)
+            => RequestAsync<T>(resource, method).Result;
+
+        /// <inheritdoc cref="Request(string, Method, object, Dictionary{string, string})"/>
+        public KatharsisResponse<T> Request<T>(string resource, Method method, Dictionary<string, string> headers)
+            => RequestAsync<T>(resource, method, headers).Result;
+
+        /// <inheritdoc cref="Request(string, Method, object, Dictionary{string, string})"/>
+        public KatharsisResponse<T> Request<T>(string resource, Method method, object body)
+            => RequestAsync<T>(resource, method, body).Result;
+
+        /// <summary>
+        /// Sends HTTP request.
+        /// </summary>
+        /// <param name="resource">Web API's resource.</param>
+        /// <param name="method">HTTP request <see cref="Method"/>.</param>
+        /// <param name="body">Body object that will be serialized by <see cref="Serializer"/> object and attached to HTTP's request content.</param>
+        /// <param name="headers">Additional headers for this HTTP request.</param>
+        /// <returns>An HTTP response object.</returns>
+        public KatharsisResponse<T> Request<T>(string resource, Method method, object body, Dictionary<string, string> headers)
+            => RequestAsync<T>(resource, method, body, headers).Result;
+
+        /// <inheritdoc cref="RequestAsync(string, Method, object, Dictionary{string, string})"/>
+        public async Task<KatharsisResponse<T>> RequestAsync<T>(string resource)
+        {
+            return await RequestAsync<T>(resource, Method.Get);
+        }
+
+        /// <inheritdoc cref="RequestAsync(string, Method, object, Dictionary{string, string})"/>
+        public async Task<KatharsisResponse<T>> RequestAsync<T>(string resource, Dictionary<string, string> headers)
+        {
+            return await RequestAsync<T>(resource, Method.Get, headers);
+        }
+
+        /// <inheritdoc cref="RequestAsync(string, Method, object, Dictionary{string, string})"/>
+        public async Task<KatharsisResponse<T>> RequestAsync<T>(string resource, Method method)
+        {
+            return await RequestAsync<T>(resource, method, null);
+        }
+
+        /// <inheritdoc cref="RequestAsync(string, Method, object, Dictionary{string, string})"/>
+        public async Task<KatharsisResponse<T>> RequestAsync<T>(string resource, Method method, object body)
+        {
+            return await RequestAsync<T>(resource, method, body, null);
+        }
+
+        /// <inheritdoc cref="RequestAsync(string, Method, object, Dictionary{string, string})"/>
+        public async Task<KatharsisResponse<T>> RequestAsync<T>(string resource, Method method, Dictionary<string, string> headers)
+        {
+            return await RequestAsync<T>(resource, method, null, headers);
+        }
+
+        /// <summary>
+        /// Sends an HTTP request as asynchronous operation.
+        /// </summary>
+        /// <param name="resource">Web API's resource.</param>
+        /// <param name="method">HTTP request <see cref="Method"/>.</param>
+        /// <param name="body">Body object that will be serialized by <see cref="Serializer"/> object and attached to HTTP's request content.</param>
+        /// <param name="headers">Additional headers for this HTTP request.</param>
+        /// <returns>The task object representing asynchronous operation.</returns>
+        public async Task<KatharsisResponse<T>> RequestAsync<T>(string resource, Method method, object body, Dictionary<string, string> headers)
+        {
+            var katharsisResponse = await RequestAsync(resource, method, body, headers);
+            var genericKatharsisResponse = new KatharsisResponse<T>(katharsisResponse);
+            genericKatharsisResponse.GenericContent = Deserializer.Deserialize<T>(genericKatharsisResponse.Content);
+            return genericKatharsisResponse;
         }
 
         /// <inheritdoc cref="Delete(string, object, Dictionary{string, string})"/>

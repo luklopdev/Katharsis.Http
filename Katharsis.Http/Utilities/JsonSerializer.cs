@@ -1,15 +1,18 @@
 ﻿using Katharsis.Http.Interfaces;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Katharsis.Http.Utilities
 {
-    internal class JsonSerializer : ISerializer
+    internal class JsonSerializer : ISerializer, IDeserializer
     {
+        public T Deserialize<T>(string content)
+        {
+            if(string.IsNullOrWhiteSpace(content))
+                throw new ArgumentNullException(nameof(content));
+
+            return JsonConvert.DeserializeObject<T>(content);
+        }
+
         public string Serialize(object body) 
         {
             if (body == null)
